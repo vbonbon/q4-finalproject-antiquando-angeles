@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" href="/shoppingcart.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/home.html">Home</a>
+            <a href="/marketplace">Marketplace</a>
+            <a href="/tutorial.html">Tutorials</a>
+        </nav>
+        <h1>Your Shopping Cart</h1>
+    </header>
+
+    <main>
+        {{#if cart.length}}
+        <section id="cart-container">
+            <h2>Items in Cart</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Price (₱)</th>
+                        <th>Qty</th>
+                        <th>Subtotal</th>
+                        <th>Remove</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each cart}}
+                    <tr>
+                        <td>{{productName}}</td>
+                        <td>{{price}}</td>
+                        <td>{{quantity}}</td>
+                        <td>{{multiply price quantity}}</td>
+                        <td>
+                            <form action="/remove-from-cart" method="POST">
+                                <input type="hidden" name="productId" value="{{productId}}">
+                                <button type="submit">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </section>
+        <div id="total-price-container">
+            <p id="total-price">Total Price: Php {{total}}</p>
+        </div>
+        <form action="/checkout" method="GET">
+            <button class="checkout-button" type="submit">Proceed to Checkout</button>
+        </form>
+        {{else}}
+        <p>Your cart is empty.</p>
+        {{/if}}
+
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Fluff [&] Stuff</p>
+    </footer>
+</body>
+</html>

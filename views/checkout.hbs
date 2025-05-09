@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to CSS file -->
+</head>
+<body>
+
+    <div class="checkout-container">
+        <h1>Checkout</h1>
+
+        <form class="checkout-form" id="checkout-form">
+            <label for="name">Full Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="address">Shipping Address:</label>
+            <textarea id="address" name="address" required></textarea>
+
+            <label for="payment">Payment Method:</label>
+            <select id="payment" name="payment">
+                <option value="credit-card">Credit Card</option>
+                <option value="paypal">PayPal</option>
+                <option value="cod">Cash on Delivery</option>
+            </select>
+
+            <button type="submit" class="checkout-button">Place Order</button>
+        </form>
+
+        <!-- Add thank you message placeholder -->
+        <div id="thank-you-message" class="hidden">
+            <h2>Thank you for your order!</h2>
+            <p>Your order is being processed. We'll send you a confirmation email shortly.</p>
+        </div>
+        
+        <div class="button-container">
+            <a href="/shoppingcart.hbs" class="button">Return to shopping cart </a>
+            <a href="/marketplace.hbs" class="button">Find more items!</a>
+            <a href="/index.html" class="button">Go to Home</a>
+        </div>
+    </div>
+
+    <style>
+        /* General Page Styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fff5f8; /* Light pink background */
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        /* Checkout Container */
+        .checkout-container {
+            width: 90%;
+            max-width: 500px;
+            background-color: white;
+            padding: 20px;
+            margin: 50px auto;
+            border-radius: 12px;
+            box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Form Styling */
+        .checkout-form {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+
+        label {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        textarea {
+            resize: vertical;
+            height: 80px;
+        }
+
+        /* Checkout Button */
+        .checkout-button {
+            background-color: #ff69b4;
+            color: white;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s ease-in-out;
+            margin-top: 15px;
+        }
+
+        .checkout-button:hover {
+            background-color: #ff1493;
+            transform: scale(1.05);
+        }
+
+        /* Navigation Buttons */
+        .button {
+            display: inline-block;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+            background-color: #ff69b4; /* Pink theme */
+            border: none;
+            border-radius: 8px;
+            transition: 0.3s ease-in-out;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+            margin: 10px;
+        }
+
+        .button:hover {
+            background-color: #ff1493;
+            transform: scale(1.05);
+        }
+
+        .button:active {
+            background-color: #d81b60;
+            transform: scale(0.98);
+        }
+
+        /* Centering the buttons */
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Hidden Thank You Message */
+        .hidden {
+            display: none;
+        }
+    </style>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.getElementById("checkout-form");
+            const thankYouMessage = document.getElementById("thank-you-message");
+
+            form.addEventListener("submit", function (event) {
+                event.preventDefault(); // Prevents form submission
+
+                // Hide the form and show the thank you message
+                form.style.display = "none";
+                thankYouMessage.classList.remove("hidden");
+            });
+        });
+    </script>
+</body>
+</html>
