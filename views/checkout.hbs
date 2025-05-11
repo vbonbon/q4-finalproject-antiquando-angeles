@@ -30,17 +30,32 @@
 
             <button type="submit" class="checkout-button">Place Order</button>
         </form>
+      
+        <h2>Order Summary</h2>
+        <ul>
+          {{#each cart}}
+            <li>
+              <strong>{{productName}}</strong> — Quantity: {{quantity}}<br>
+              {{#if variant}}<em>Variant:</em> {{variant}}<br>{{/if}}
+              {{#if comment}}<em>Request:</em> {{comment}}<br>{{/if}}
+            </li>
+          {{/each}}
+          <h3>Total: ₱{{total}}</h3>
+        </ul>
+
 
         <!-- Add thank you message placeholder -->
         <div id="thank-you-message" class="hidden">
             <h2>Thank you for your order!</h2>
             <p>Your order is being processed. We'll send you a confirmation email shortly.</p>
+            <p>Your order will be shipped to: {{checkoutInfo.address}}</p>
+            <p>Payment method: {{checkoutInfo.paymentMethod}}</p>
         </div>
         
         <div class="button-container">
-            <a href="/shoppingcart.hbs" class="button">Return to shopping cart </a>
-            <a href="/marketplace.hbs" class="button">Find more items!</a>
-            <a href="/index.html" class="button">Go to Home</a>
+            <a href="/shoppingcart" class="button">Return to shopping cart </a>
+            <a href="/marketplace" class="button">Find more items!</a>
+            <a href="/home" class="button">Go to Home</a>
         </div>
     </div>
 

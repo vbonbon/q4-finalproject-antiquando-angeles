@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Register</title>
-
-      <style>
+  <title>Register or Login</title>
+    <style>
     body {
   font-family: 'Arial', sans-serif;
   background: #fff0f5; /* Light pink background */
@@ -88,27 +87,46 @@ button:hover {
   text-decoration: underline;
 }
     </style>
-  
+
 </head>
 <body>
   <div class="container">
-    <h2>Register</h2>
-    {{#if error}}
-      <div class="message" style="color: red;">{{error}}</div>
+    <h2 id="form-title">{{#if user}}Welcome back, {{user.name}}!{{else}}Register{{/if}}</h2>
+
+    {{#if user}}
+      <!-- User is logged in -->
+      <p>You're already logged in. Go to <a href="/home">Home</a></p>
+      <a href="/logout">Logout</a>
+    {{else}}
+      <!-- Registration Form -->
+      <form id="register-form" class="{{#if activeForm}}active{{/if}}">
+        <input type="text" id="reg-name" placeholder="" required />
+        <input type="email" id="reg-email" placeholder="Email" required />
+        <input type="password" id="reg-password" placeholder="Password" required />
+        <button type="submit">Sign Up</button>
+      </form>
+
+      <!-- Login Form -->
+      <form id="login-form" class="{{#unless activeForm}}active{{/unless}}">
+        <input type="email" id="login-email" placeholder="Email" required />
+        <input type="password" id="login-password" placeholder="Password" required />
+        <button type="submit">Login</button>
+      </form>
+
+      <div class="toggle-link" onclick="toggleForms()">Already have an account? Log in</div>
+      <div class="message" id="message"></div>
     {{/if}}
 
-    <form action="/registration" method="POST" class="active">
-      <input type="text" name="name" placeholder="Full Name" required />
-      <input type="text" name="username" placeholder="Username" required />
-      <input type="email" name="email" placeholder="Email" required />
-      <input type="password" name="password" placeholder="Password" required />
-      <button type="submit">Sign Up</button>
-    </form>
-
-    <div class="toggle-link">
-      Already have an account? <a href="/login">Login</a>
-    </div>
   </div>
+
+  <script>
+    const formTitle = document.getElementById('form-title');
+    const toggleLink = document.querySelector('.toggle-link');
+
+    function toggleForms() {
+      // Handle form toggling on the client side (login/register)
+    }
+  </script>
 </body>
 </html>
 

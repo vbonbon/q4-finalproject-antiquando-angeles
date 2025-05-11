@@ -9,7 +9,7 @@
 <body>
     <header>
         <nav>
-            <a href="/home.html">Home</a>
+            <a href="/home">Home</a>
             <a href="/marketplace">Marketplace</a>
             <a href="/tutorial.html">Tutorials</a>
         </nav>
@@ -24,6 +24,7 @@
                 <thead>
                     <tr>
                         <th>Product</th>
+                        <th>Variant</th>
                         <th>Price (₱)</th>
                         <th>Qty</th>
                         <th>Subtotal</th>
@@ -32,36 +33,97 @@
                 </thead>
                 <tbody>
                     {{#each cart}}
-                    <tr>
+                    <tr data-product-id="{{productId}}">
                         <td>{{productName}}</td>
-                        <td>{{price}}</td>
-                        <td>{{quantity}}</td>
-                        <td>{{multiply price quantity}}</td>
+                        <td>{{variant}}</td>
+                        <td class="price">{{price}}</td>
+                        <td>
+                            <div class="qty-controls">
+                                <button class="qty-btn decrease">−</button>
+                                <span class="quantity">{{quantity}}</span>
+                                <button class="qty-btn increase">+</button>
+                            </div>
+                        </td>
+                        <td class="subtotal">{{multiply price quantity}}</td>
                         <td>
                             <form action="/remove-from-cart" method="POST">
                                 <input type="hidden" name="productId" value="{{productId}}">
                                 <button type="submit">Remove</button>
                             </form>
                         </td>
+                      <td> {{#if comment}}<p>Additional Request: {{comment}}</p>{{/if}} </td>
                     </tr>
                     {{/each}}
                 </tbody>
             </table>
         </section>
+
         <div id="total-price-container">
             <p id="total-price">Total Price: Php {{total}}</p>
         </div>
+
         <form action="/checkout" method="GET">
             <button class="checkout-button" type="submit">Proceed to Checkout</button>
         </form>
         {{else}}
         <p>Your cart is empty.</p>
         {{/if}}
-
     </main>
 
     <footer>
         <p>&copy; 2024 Fluff [&] Stuff</p>
     </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const rows = document.querySelectorAll("tr[data-product-id]");
+
+            function updateTotal() {
+                let total = 0;
+                document.querySelectorAll(".subtotal").forEach(sub => {
+                    total += parseFloat(sub.textContent);
+                });
+                document.getElementById("total-price").textContent = "Total Price: Php " + total.toFixed(2);
+            }
+
+            rows.forEach(row => {
+                const productId = row.getAttribute("data-product-id");
+                const price = parseFloat(row.querySelector(".price").textContent);
+                const qtyEl = row.querySelector(".quantity");
+                const subEl = row.querySelector(".subtotal");
+
+                row.querySelector(".increase").addEventListener("click", () => {
+                    let quantity = parseInt(qtyEl.textContent);
+                    quantity++;
+                    qtyEl.textContent = quantity;
+                    subEl.textContent = (quantity * price).toFixed(2);
+                    updateTotal();
+                    sendUpdate(productId, quantity);
+                });
+
+                row.querySelector(".decrease").addEventListener("click", () => {
+                    let quantity = parseInt(qtyEl.textContent);
+                    if (quantity > 1) {
+                        quantity--;
+                        qtyEl.textContent = quantity;
+                        subEl.textContent = (quantity * price).toFixed(2);
+                        updateTotal();
+                        sendUpdate(productId, quantity);
+                    }
+                });
+            });
+
+            function sendUpdate(productId, quantity) {
+                fetch("/update-quantity", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ productId, quantity })
+                });
+            }
+        });
+    </script>
 </body>
 </html>
+
