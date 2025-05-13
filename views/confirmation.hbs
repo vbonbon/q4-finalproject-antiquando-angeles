@@ -1,0 +1,8 @@
+<h1>Thank you for your order, {{checkoutInfo.name}}!</h1>
+<p>Your order will be shipped to: {{checkoutInfo.address}}</p>
+<p>Payment method: {{checkoutInfo.paymentMethod}}</p>
+
+<script>
+  // Clear localStorage cart
+  localStorage.removeItem('cart');
+</script>

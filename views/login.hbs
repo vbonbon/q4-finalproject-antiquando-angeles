@@ -1,5 +1,111 @@
-<form action="/login" method="POST">
-  <input type="text" name="username" placeholder="Username" required />
-  <input type="password" name="password" placeholder="Password" required />
-  <button type="submit">Login</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login</title>
+  
+    <style>
+    body {
+  font-family: 'Arial', sans-serif;
+  background: #fff0f5; /* Light pink background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.container {
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 340px;
+  border: 2px solid #ffb6c1; /* Soft pink border */
+}
+
+h2 {
+  text-align: center;
+  color: #d6336c; /* Rose red/pink header */
+  font-family: 'Georgia', serif;
+}
+
+form {
+  display: none;
+  flex-direction: column;
+}
+
+form.active {
+  display: flex;
+}
+
+input {
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ffb6c1;
+  background-color: #fffafd;
+  font-size: 14px;
+}
+
+button {
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  background-color: #ff6f91; /* Bright pink */
+  color: white;
+  cursor: pointer;
+  margin-top: 12px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #ff5c83;
+}
+
+.toggle-link {
+  text-align: center;
+  margin-top: 14px;
+  color: #d6336c;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 14px;
+}
+
+.message {
+  text-align: center;
+  margin-top: 12px;
+  font-size: 15px;
+  color: #008000; /* Green by default (for success), overridden if error */
+}
+
+.message a {
+  display: inline-block;
+  margin-top: 8px;
+  color: #d6336c;
+  text-decoration: underline;
+}
+    </style>
+  
+</head>
+<body>
+  <div class="container">
+    <h2>Login</h2>
+    {{#if error}}
+      <div class="message" style="color: red;">{{error}}</div>
+    {{/if}}
+
+    <form action="/login" method="POST" class="active">
+      <input type="email" name="email" placeholder="email" required />
+      <input type="password" name="password" placeholder="password" required />
+      <button type="submit">Login</button>
+    </form>
+
+    <div class="toggle-link">
+      Don't have an account? <a href="/">Register</a>
+    </div>
+  </div>
+</body>
+</html>
