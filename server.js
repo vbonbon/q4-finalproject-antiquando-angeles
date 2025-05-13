@@ -192,6 +192,7 @@ app.get('/marketplace', (req, res) => {
 // Cart
 app.get('/shoppingcart', (req, res) => {
   const cart = req.session.cart || [];
+  const isCartEmpty = cart.length === 0
 
   const cartWithTotal = cart.map(item => ({
     ...item,
@@ -239,19 +240,56 @@ app.post('/add-to-cart', (req, res) => {
   res.redirect('/marketplace');
 });
 
-app.post('/update-quantity', (req, res) => {
-  const { productId, quantity } = req.body;
-  const cart = req.session.cart || [];
-  const item = cart.find(p => p.productId === productId);
-  if (item) item.quantity = parseInt(quantity);
-  res.json({ success: true });
+app.post("/update-quantity", (req, res) => {
+    const { productId, quantity } = req.body;
+    const cartPath = path.join(__dirname, '.data', 'cart.json'); // Ensure correct path
+
+    try {
+        const cartData = fs.readFileSync(cartPath, "utf-8");
+        let cart = JSON.parse(cartData);
+
+        // Find the item by productId and update the quantity
+        const item = cart.find(item => item.productId === productId);
+        if (item) {
+            item.quantity = quantity;
+        }
+
+        fs.writeFileSync(cartPath, JSON.stringify(cart, null, 2));
+        res.sendStatus(200);
+    } catch (err) {
+        console.error("Error updating cart:", err);
+        res.status(500).send("Internal server error");
+    }
 });
 
-app.post('/remove-from-cart', (req, res) => {
-  const { productId } = req.body;
-  req.session.cart = (req.session.cart || []).filter(item => item.productId !== productId);
-  res.redirect('/shoppingcart');
+app.post("/remove-from-cart", (req, res) => {
+    const { productId } = req.body;
+    const cartPath = path.join(__dirname, ".data", "cart.json");
+
+    try {
+        const cartData = fs.readFileSync(cartPath, "utf-8");
+        let cart = JSON.parse(cartData);
+
+        // Remove the item
+        cart = cart.filter(item => item.productId !== productId);
+
+        // Save updated cart
+        fs.writeFileSync(cartPath, JSON.stringify(cart, null, 2));
+      
+        if (cart.legnth === 0) {
+          delete req.session.cart;
+        } else {
+          req.session.cart = cart;
+        }
+      
+        res.sendStatus(200);
+      
+    } catch (err) {
+        console.error("Error updating cart:", err);
+        res.status(500).send("Internal server error");
+    }
 });
+
 
 app.get('/views/shoppingcart', (req, res) => {
   res.json(req.session.cart || []);
@@ -260,14 +298,52 @@ app.get('/views/shoppingcart', (req, res) => {
 // Checkout
 app.get('/checkout', (req, res) => {
   const cart = req.session.cart || [];
-  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  res.render('checkout', { cart, total });
+  
+
+  if (cart.length === 0) {
+    return res.send('<script>alert("Your cart is empty!"); window.location.href="/shoppingcart";</script>'); 
+  }
+
+  const cartWithTotal = cart.map(item => ({
+    ...item,
+    subtotal: item.price * item.quantity
+  }));
+
+  const total = cartWithTotal.reduce((acc, item) => acc + item.subtotal, 0);
+  const checkoutInfo = req.session.checkoutInfo || null;
+
+  res.render('checkout', { cart: cartWithTotal, total, checkoutInfo });
 });
+
+
+// Checkout - POST
+app.post('/checkout', (req, res) => {
+  const { name, address, paymentMethod } = req.body;
+
+  // Save checkout info
+  req.session.checkoutInfo = { name, address, paymentMethod };
+
+  // Clear the cart
+  req.session.cart = [];
+  fs.writeFileSync(cartFilePath, JSON.stringify([], null, 2), 'utf-8');
+
+  res.render('checkout', {
+    cart: [],
+    total: 0,
+    checkoutInfo: req.session.checkoutInfo,
+    orderPlaced: true,
+    isCartEmpty: true
+  });
+});
+
 
 app.post('/checkout', (req, res) => {
   const { name, address, paymentMethod } = req.body;
+  
+  // saves checkout info
   req.session.checkoutInfo = { name, address, paymentMethod };
   
+  // clears the server-side cart
   req.session.cart = [];
   fs.writeFileSync(cartFilePath, JSON.stringify([], null, 2), 'utf-8');
   

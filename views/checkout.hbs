@@ -30,8 +30,9 @@
 
             <button type="submit" class="checkout-button">Place Order</button>
         </form>
-      
-        <h2>Order Summary</h2>
+
+      <h2>Order Summary</h2>
+      {{#if cart.length}}
         <ul>
           {{#each cart}}
             <li>
@@ -40,17 +41,24 @@
               {{#if comment}}<em>Request:</em> {{comment}}<br>{{/if}}
             </li>
           {{/each}}
-          <h3>Total: ₱{{total}}</h3>
         </ul>
+        <h3>Total: ₱{{total}}</h3>
+      {{else}}
+        <p>Your cart is empty. 🛒</p>
+        <a href="/marketplace" class="button">Return to Marketplace</a>
+      {{/if}}
+
 
 
         <!-- Add thank you message placeholder -->
+      {{#if checkoutInfo}}
         <div id="thank-you-message" class="hidden">
             <h2>Thank you for your order!</h2>
             <p>Your order is being processed. We'll send you a confirmation email shortly.</p>
             <p>Your order will be shipped to: {{checkoutInfo.address}}</p>
             <p>Payment method: {{checkoutInfo.paymentMethod}}</p>
         </div>
+      {{/if}}
         
         <div class="button-container">
             <a href="/shoppingcart" class="button">Return to shopping cart </a>
@@ -174,7 +182,10 @@
                 form.style.display = "none";
                 thankYouMessage.classList.remove("hidden");
             });
-        });
+          });
+        // Clear cart from localStorage only after successful checkout
+        localStorage.removeItem('cart');
+
     </script>
 </body>
 </html>

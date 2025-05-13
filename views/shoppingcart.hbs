@@ -46,14 +46,12 @@
                         </td>
                         <td class="subtotal">{{multiply price quantity}}</td>
                         <td>
-                            <form action="/remove-from-cart" method="POST">
-                                <input type="hidden" name="productId" value="{{productId}}">
-                                <button type="submit">Remove</button>
-                            </form>
+                          <button class="remove-btn" data-product-id="{{productId}}">Remove</button>
                         </td>
                       <td> {{#if comment}}<p>Additional Request: {{comment}}</p>{{/if}} </td>
                     </tr>
                     {{/each}}
+                  
                 </tbody>
             </table>
         </section>
@@ -75,6 +73,26 @@
     </footer>
 
     <script>
+      
+        document.querySelectorAll(".remove-btn").forEach(button => {
+            button.addEventListener("click", () => {
+                const productId = button.getAttribute("data-product-id");
+
+                fetch("/remove-from-cart", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json"
+                  },
+                  body: JSON.stringify({ productId })
+                }).then(res => {
+                  if (res.ok) {
+                    button.closest("tr").remove(); // Remove row from DOM
+                  updateTotal(); // Recalculate total
+                  }
+                });
+            });
+        });
+
         document.addEventListener("DOMContentLoaded", () => {
             const rows = document.querySelectorAll("tr[data-product-id]");
 
